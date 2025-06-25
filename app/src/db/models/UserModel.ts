@@ -3,6 +3,7 @@ import { getDb } from "../config/mongodb";
 import { CustomError } from "../helpers/CustomError";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import * as jose from "jose";
 
 const userSchema = z.object({
   email: z.string().email("Email must be in correct format"),
@@ -43,32 +44,46 @@ export default class UserModel {
     return "User registered";
   }
 
- 
+  static async login(payload: ILogin) {
+    const collection = this.getCollection();
+    const { email, password } = payload;
+    if (!email) {
+      throw new CustomError("Email cant be empty", 400);
+    }
+
+    if (!password) {
+      throw new CustomError("Password cant be empty");
+    }
+
+    const user = await collection.findOne({ email });
+
+    if (!user) {
+      throw new CustomError("Invalid email or password", 401);
+    }
+
+    const passwordCheck = bcrypt.compareSync(password, user.password);
+
+    if (!passwordCheck) {
+      throw new CustomError("Invalid email or password", 401);
+    }
+
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+
+    try {
+      const token = await new jose.SignJWT({
+        _id: user._id,
+        username: user.username,
+      })
+        .setProtectedHeader({ alg: "HS256" })
+        .sign(secret);
+
+      return {
+        message: "Login successful",
+        token: token,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new CustomError(`Failed to generate token - ${error}`, 500);
+    }
+  }
 }
-
-// buatkan saya menu makanan (nama menu harus benar / tidak general) mealprep untuk 7 hari dan untuk makan sarapan, siang, dan malam sehingga memenuhi kebutuhan kalori harian dengan patokan jatah kalori per hari:
-// * usia saya 20 tahun
-// * tinggi saya 174cm
-// * berat badan saya 58kg,
-// * laki laki
-// * tingkat aktifitas saya: Somewhat active: Include light activity or moderate activity about two to three times a week.
-// * tujuan saya bulking
-// * saya alergi seafood
-
-// Ensure the output is a valid JSON array containing 3 menu per day (for breakfast, lunch, and dinner). Do not include any other text outside of this JSON array.
-// Example of one exercise object in the array:
-// {
-//     "calories intake/day": number,
-//     "menu": {
-//         "name": string
-//         "meal type": breakfast/lunch/dinner
-//         "calories": number, = total calories from all groceries calories
-//         "ingredients": [string],
-//         "groceries": {
-//             "name": string,
-//             "calories": number, = percentage from all calories
-//             "measurement": string
-//         }
-//     }
-
-// }`;
