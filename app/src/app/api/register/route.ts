@@ -1,4 +1,4 @@
-import IUsers from "@/app/interfaces/users";
+import {IUsers} from "@/app/interfaces/users";
 import errorHandler from "@/db/helpers/errorHandler";
 import UserModel from "@/db/models/UserModel";
 
