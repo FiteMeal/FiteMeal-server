@@ -14,7 +14,7 @@ const userSchema = z.object({
       /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
       "Password must contain both letters and numbers"
     ),
-  gender: z.string().min(1, "You must fill out gender"),
+  gender: z.string().min(1, "You must fill out your gender"),
   dateOfBirth: z.string().min(1, "You must fill out your birth date")
 });
 
@@ -40,6 +40,8 @@ export async function POST(req: Request) {
             await User.insert({...body, height: 0, weight: 0, activityLevel: "active"});
         return Response.json({message:"Registration successful!"}, {status: 201})
     } catch (error) {
+      console.log(error);
+      
         const {message, status} = errorHandler(error)
         return Response.json({message}, {status})
     }
