@@ -23,6 +23,7 @@ export default class OpenAi {
                 - Format: JSON, tidak perlu penjelasan tambahan.
                 - Struktur data per hari:
                 - "day": Nomor hari (1-X)
+                - "date" : //hari pertama atau start date sesuai start date , begitu seterusnya dengan format YYYY-MM-DD atau format seperti new Date ()
                 - "dailycalories": Total 1500 kcal.
                 - "breakfast":
                     - "name"
@@ -30,6 +31,8 @@ export default class OpenAi {
                     - "calories": Sekitar 500
                     - "ingredients": Array bahan
                     - "recipes": Array langkah masak
+                    - "isDone" : false
+                    - "notes" : ""
                 - "lunch": *(Harus juga punya ingredients dan recipes)*
                 - "dinner": *(Harus juga punya ingredients dan recipes)*
 
