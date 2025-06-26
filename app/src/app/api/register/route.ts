@@ -14,6 +14,8 @@ const userSchema = z.object({
       /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
       "Password must contain both letters and numbers"
     ),
+  gender: z.string().min(1, "You must fill out your gender"),
+  dateOfBirth: z.string().min(1, "You must fill out your birth date")
 });
 
 
@@ -21,6 +23,8 @@ export async function POST(req: Request) {
     try {
         const body: IUsers = await req.json()
          userSchema.parse(body);
+
+         
         
             const user = await User.where('email',body.email).first();
             if (user) {
@@ -33,9 +37,11 @@ export async function POST(req: Request) {
             }
         
             body.password = bcrypt.hashSync(body.password, 10);
-            await User.insert(body);
-        return Response.json({message:"register berhasil"}, {status: 201})
+            await User.insert({...body, height: 0, weight: 0, activityLevel: "active"});
+        return Response.json({message:"Registration successful!"}, {status: 201})
     } catch (error) {
+      console.log(error);
+      
         const {message, status} = errorHandler(error)
         return Response.json({message}, {status})
     }
