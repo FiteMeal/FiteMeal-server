@@ -23,6 +23,8 @@ export interface Breakfast {
   calories: number
   ingredients: string[]
   recipes: string[]
+  isDone:boolean
+  notes:string
 }
 
 export interface Lunch {
@@ -31,6 +33,8 @@ export interface Lunch {
   calories: number
   ingredients: string[]
   recipes: string[]
+  isDone:boolean
+  notes:string
 }
 
 export interface Dinner {
@@ -39,6 +43,8 @@ export interface Dinner {
   calories: number
   ingredients: string[]
   recipes: string[]
+  isDone:boolean
+  notes:string
 }
 export interface FormPrep extends IMongoloquentSchema, IMongoloquentTimestamps {
   userId: ObjectId

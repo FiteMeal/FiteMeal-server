@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "mongoloquent": "^3.3.4",
     "next": "15.3.4",
     "openai": "^5.7.0",
     "react": "^19.0.0",
