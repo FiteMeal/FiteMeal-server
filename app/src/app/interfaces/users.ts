@@ -1,4 +1,6 @@
-export interface IUsers {
+import { IMongoloquentSchema, IMongoloquentTimestamps } from "mongoloquent"
+
+export interface IUsers extends IMongoloquentSchema,IMongoloquentTimestamps {
     name: string,
     username: string,
     email: string,
@@ -6,7 +8,7 @@ export interface IUsers {
     gender: string
 }
 
-export interface ILogin {
+export interface ILogin extends IMongoloquentSchema,IMongoloquentTimestamps {
     email: string,
     password: string
 }

@@ -1,3 +1,6 @@
+import { ObjectId } from "mongodb"
+import { IMongoloquentSchema, IMongoloquentTimestamps } from "mongoloquent"
+
 export type Root = Root2[]
 
 export interface Root2 {
@@ -36,4 +39,17 @@ export interface Dinner {
   calories: number
   ingredients: string[]
   recipes: string[]
+}
+export interface FormPrep extends IMongoloquentSchema, IMongoloquentTimestamps {
+  userId: ObjectId
+  name:string
+  age: number
+  weight: number
+  height: number
+  gender: string
+  activity_level: string
+  goals: string
+  preferences: string
+  duration : number
+  startDate:string
 }
