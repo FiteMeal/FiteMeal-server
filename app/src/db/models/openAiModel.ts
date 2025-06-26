@@ -1,53 +1,23 @@
 import openai from "@/lib/openai";
 import { getDb } from "../config/mongodb";
+import { FormPrep } from "@/app/interfaces/prepMeal";
+import { ObjectId } from "mongodb";
 
-interface IPlans {
-  _id: string;
-  name: string;
-  plans: IDetail[];
-}
-
-interface IDetail {
-  day: string;
-  dailycalories: number;
-}
-interface IBreakfast {
-  name: string;
-  imageUrl: string;
-  calories: number;
-  ingredients: string[];
-  recipes: string[];
-}
-
-interface ILunch {
-  name: string;
-  imageUrl: string;
-  calories: number;
-  ingredients: string[];
-  recipes: string[];
-}
-interface IDinner {
-  name: string;
-  imageUrl: string;
-  calories: number;
-  ingredients: string[];
-  recipes: string[];
-}
 export default class OpenAi {
   static async getCollection() {
     return getDb().collection("plans");
   }
-  static async generatePrepMeal() {
+  static async generatePrepMeal(payload: FormPrep) {
     const response = await openai.responses.create({
       model: "gpt-4.1",
-      input: `Tolong buatkan data JSON meal plan selama 3 hari (3/5/7 hari).  
-                - usia saya 20 tahun
-                - tinggi saya 174cm
-                - berat badan saya 58kg, 
-                - laki laki
-                - tingkat aktifitas saya: Somewhat active: Include light activity or moderate activity about two to three times a week.
-                - tujuan saya bulking
-                - saya alergi seafood
+      input: `Tolong buatkan data JSON meal plan selama ${payload.duration} hari (3/5/7 hari).  
+                - usia saya ${payload.age} tahun
+                - tinggi saya ${payload.height}cm
+                - berat badan saya ${payload.weight}kg, 
+                - ${payload.gender}
+                - tingkat aktifitas saya: ${payload.activity_level}.
+                - tujuan saya ${payload.goals}
+                - preferences : ${payload.preferences}
                 Detail format:
 
                 - Format: JSON, tidak perlu penjelasan tambahan.
@@ -68,20 +38,23 @@ export default class OpenAi {
                 - Menu setiap hari harus beda.
                 - Lunch dan Dinner harus sama lengkapnya seperti Breakfast (ada ingredients dan recipes).
                 - Jangan ada narasi, output hanya JSON seperti ini :
-                    [
+                    
                     {
-                        name:"Foolan byin foolan",
-                        userId: new ObjectId('123456789'),
+                        name:${payload.name},
+                        userId: ${new ObjectId(payload.userId)},
+                        startDate : ${payload.startDate}
                         plans:[output disini]
-                    }  ]`,
+                    }  `,
     });
 
     console.log(response.output_text);
-    const hasil = JSON.parse(response.output_text);
-    console.log(typeof hasil, "ini tipe data <<<<<");
-    const collection = await this.getCollection()
-    await collection.insertOne(hasil)
-    return hasil
+    const trim = response.output_text.replace(/```json/, "").replace(/```/, "");
 
+    const hasil = JSON.parse(trim);
+    hasil.userId = new ObjectId(payload.userId)
+    console.log(typeof hasil, "ini tipe data <<<<<");
+    const collection = await this.getCollection();
+    await collection.insertOne(hasil);
+    return hasil;
   }
 }
