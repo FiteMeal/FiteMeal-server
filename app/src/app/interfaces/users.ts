@@ -5,7 +5,11 @@ export interface IUsers extends IMongoloquentSchema,IMongoloquentTimestamps {
     username: string,
     email: string,
     password: string,
-    gender: string
+    gender: string,
+    dateOfBirth: string,
+    height: number,
+    weight: number,
+    activityLevel: string
 }
 
 export interface ILogin extends IMongoloquentSchema,IMongoloquentTimestamps {
