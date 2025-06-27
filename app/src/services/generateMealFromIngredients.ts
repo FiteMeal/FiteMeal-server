@@ -20,7 +20,7 @@ Namun saya tidak memiliki semua bahan tersebut.
 
 Saya hanya memiliki bahan-bahan berikut ini: ${availableIngredients}.
 
-Buat ulang meal plan saya (dengan format dan struktur yang sama), hanya menggunakan bahan yang saya miliki, dan tetap menjaga total kalori harian sekitar 1500 kcal/hari.
+Buat ulang meal plan saya (dengan format dan struktur yang sama dan hari yang sama , jika todolist ada 3 hari respon juga harus 3 hari), hanya menggunakan bahan yang saya miliki, dan tetap menjaga total kalori harian sekitar 1500 kcal/hari.
 
 Balas dalam format JSON:
 {
@@ -42,7 +42,11 @@ Balas dalam format JSON:
   const hasil = JSON.parse(trimmed);
 
   hasil.userId = new Object(payload.userId);
+  console.log(hasil.userId,'ini user id');
+  
   hasil.plansId = new Object(payload.plansId);
+  console.log(hasil.plansId,"ini plans id");
+  
 
   return hasil;
 }
