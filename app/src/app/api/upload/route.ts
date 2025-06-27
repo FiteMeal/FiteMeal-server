@@ -1,13 +1,10 @@
-import { parseForm } from "@/db/helpers/parseForm"
 import { v2 as cloudinary } from "cloudinary"
 import errorHandler from "@/db/helpers/errorHandler"
-import formidable from "formidable"
+import PlansData from "@/db/models/Plans";
+import generateByPhoto from "@/services/generateRecipeByPhoto";
+import UserPhoto from "@/db/models/generateRecipeByPhoto";
+import { ObjectId } from "mongodb";
 
-export const config = {
-    api : {
-        bodyParser: false
-    }
-}
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -19,6 +16,9 @@ export async function POST(req:Request){
     try {
         const formData = await req.formData();
         const file = formData.get('photo') as File;
+        const plansId = formData.get('plansId') as string
+        console.log(plansId,'ini plans id');
+        
         
         if (!file) {
             return Response.json(
@@ -46,11 +46,16 @@ export async function POST(req:Request){
         });
         
         
-        return Response.json({
-            message: "Upload successful",
-            url: (upload as unknown).secure_url,
-            public_id: (upload as unknown).public_id
-        }, { status: 201 })
+        const payload = {
+            plansId : new ObjectId(plansId),
+            userId:new ObjectId('685d3c4afd9e904bd1ac70b8'),
+            photoUrl : upload.secure_url
+        }
+        await UserPhoto.insert(payload)
+        const generateResponse = await generateByPhoto(payload)
+        await PlansData.insert(generateResponse)
+        
+        return Response.json({generateResponse}, { status: 201 })
         
     } catch (error) {
         console.log(error)
