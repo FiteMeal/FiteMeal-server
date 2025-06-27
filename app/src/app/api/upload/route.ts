@@ -17,6 +17,7 @@ export async function POST(req:Request){
         const formData = await req.formData();
         const file = formData.get('photo') as File;
         const plansId = formData.get('plansId') as string
+        const userId = formData.get('userId') as string
         console.log(plansId,'ini plans id');
         
         
@@ -48,7 +49,7 @@ export async function POST(req:Request){
         
         const payload = {
             plansId : new ObjectId(plansId),
-            userId:new ObjectId('685d3c4afd9e904bd1ac70b8'),
+            userId:new ObjectId(userId),
             photoUrl : upload.secure_url
         }
         await UserPhoto.insert(payload)
