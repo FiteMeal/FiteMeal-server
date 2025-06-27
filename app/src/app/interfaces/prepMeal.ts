@@ -1,16 +1,18 @@
 import { ObjectId } from "mongodb"
 import { IMongoloquentSchema, IMongoloquentTimestamps } from "mongoloquent"
 
-export type Root = Root2[]
+export type Root = Plans[]
 
-export interface Root2 {
+export interface Plans extends IMongoloquentSchema,IMongoloquentTimestamps {
   name: string
   userId: string
-  plans: Plan[]
+  startDate:string
+  todoList: TodoList[]
 }
 
-export interface Plan {
+export interface TodoList {
   day: number
+  date:string
   dailycalories: number
   breakfast: Breakfast
   lunch: Lunch
@@ -58,4 +60,9 @@ export interface FormPrep extends IMongoloquentSchema, IMongoloquentTimestamps {
   preferences: string
   duration : number
   startDate:string
+}
+export interface RecipeFromModel extends IMongoloquentSchema,IMongoloquentTimestamps{
+  userId : ObjectId
+  plansId:ObjectId
+  photoUrl:string
 }
