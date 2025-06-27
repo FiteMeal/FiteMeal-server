@@ -61,3 +61,8 @@ export interface FormPrep extends IMongoloquentSchema, IMongoloquentTimestamps {
   duration : number
   startDate:string
 }
+export interface RecipeFromModel extends IMongoloquentSchema,IMongoloquentTimestamps{
+  userId : ObjectId
+  plansId:ObjectId
+  photoUrl:string
+}

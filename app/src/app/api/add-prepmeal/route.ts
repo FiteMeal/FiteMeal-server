@@ -1,10 +1,10 @@
-import OpenAi from "@/db/models/openAiModel"
+    import OpenAi from "@/db/models/openAiModel"
 
-export async function POST (req:Request){
+    export async function POST (req:Request){
 
-    const body = await req.json()
+        const body = await req.json()
 
-    const resp = await OpenAi.generatePrepMeal(body)
+        const resp = await OpenAi.generatePrepMeal(body)
 
-    return Response.json({resp},{status:201})
-}
+        return Response.json({resp},{status:201})
+    }
