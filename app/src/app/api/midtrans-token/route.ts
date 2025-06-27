@@ -1,9 +1,18 @@
 import { CustomError } from "@/db/helpers/CustomError";
 import errorHandler from "@/db/helpers/errorHandler";
+import Transaction from "@/db/models/Transaction";
 
 export async function POST(req: Request) {
   try {
-    const { amount, orderId } = await req.json();
+    const { amount, orderId, userId } = await req.json();
+
+    const existingTransaction = await Transaction.where(
+      "orderId",
+      orderId
+    ).first();
+    if (existingTransaction) {
+      throw new CustomError(`Order ID ${orderId} already exists`, 400);
+    }
 
     const parameter = {
       transaction_details: {
@@ -27,6 +36,7 @@ export async function POST(req: Request) {
     const authString = Buffer.from(
       process.env.MIDTRANS_SERVER_KEY + ":"
     ).toString("base64");
+
     const resp = await fetch(
       "https://app.sandbox.midtrans.com/snap/v1/transactions",
       {
@@ -40,10 +50,9 @@ export async function POST(req: Request) {
       }
     );
 
-    
     const midtransResp = await resp.json();
     console.log(midtransResp);
-    
+
     if (!resp.ok) {
       const errorMessage = midtransResp.error_messages
         ? midtransResp.error_messages.join(", ")
@@ -51,8 +60,22 @@ export async function POST(req: Request) {
 
       throw new CustomError(`Midtrans Error: ${errorMessage}`, resp.status);
     }
+
+    const transactionData = {
+      orderId: orderId,
+      amount: amount,
+      status: "pending",
+      midtransToken: midtransResp.token,
+      userId: userId,
+      redirectUrl: midtransResp.redirect_url,
+    };
+
+    await Transaction.insert(transactionData);
+    console.log(`Transaction ${orderId} saved to database`);
+
     return Response.json(
       {
+        orderId: orderId,
         midtransToken: midtransResp.token,
         paymentMethodLink: midtransResp.redirect_url,
       },

@@ -17,3 +17,12 @@ export interface ILogin extends IMongoloquentSchema,IMongoloquentTimestamps {
     email: string,
     password: string
 }
+
+export interface IMidtransRecord extends IMongoloquentSchema, IMongoloquentTimestamps {
+    orderId: string,
+    amount: number,
+    status: string,
+    midtransToken: string,
+    userId: string,
+    redirectUrl: string
+}
