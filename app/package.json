@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "midtrans-client": "^1.4.3",
     "mongoloquent": "^3.3.4",
     "next": "15.3.4",
     "openai": "^5.7.0",
