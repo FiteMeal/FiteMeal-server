@@ -37,7 +37,7 @@ export async function POST(req: Request) {
             }
         
             body.password = bcrypt.hashSync(body.password, 10);
-            await User.insert({...body, height: 0, weight: 0, activityLevel: "active"});
+            await User.insert({...body, height: 0, weight: 0, activityLevel: "active", isPremium: false});
         return Response.json({message:"Registration successful!"}, {status: 201})
     } catch (error) {
       console.log(error);

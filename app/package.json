@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "midtrans-client": "^1.4.3",
     "cloudinary": "^2.7.0",
     "formidable": "^3.5.4",
     "mongoloquent": "^3.3.4",
