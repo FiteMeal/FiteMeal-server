@@ -9,7 +9,7 @@ export interface IUsers extends IMongoloquentSchema,IMongoloquentTimestamps {
     dateOfBirth: string,
     height: number,
     weight: number,
-    activityLevel: string
+    activityLevel: string,
     isPremium: boolean
 }
 
