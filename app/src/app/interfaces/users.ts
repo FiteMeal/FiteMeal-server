@@ -9,8 +9,8 @@ export interface IUsers extends IMongoloquentSchema,IMongoloquentTimestamps {
     dateOfBirth: string,
     height: number,
     weight: number,
-    activityLevel: string
-    isPremium: boolean
+    activityLevel: string,
+    isPremium: boolean,
 }
 
 export interface ILogin extends IMongoloquentSchema,IMongoloquentTimestamps {

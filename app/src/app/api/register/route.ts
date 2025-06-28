@@ -4,6 +4,7 @@ import errorHandler from "@/db/helpers/errorHandler";
 import User from "@/db/models/User";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+
 const userSchema = z.object({
   email: z.string().email("Email must be in correct format"),
   username: z.string().min(5, "Username must be at least 5 characters"),
