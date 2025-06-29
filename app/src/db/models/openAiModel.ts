@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 
 export default class OpenAi {
   static async getCollection() {
-    return getDb().collection("plans");
+    return getDb().collection("mealPlans");
   }
   static async generatePrepMeal(payload: FormPrep) {
     const response = await openai.responses.create({
