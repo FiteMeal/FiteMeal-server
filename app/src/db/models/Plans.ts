@@ -4,5 +4,5 @@ import { Model } from "mongoloquent";
 
 export default class PlansData extends Model<Plans>{
     static $schema: Plans;
-    protected $collection: string = 'plans'
+    protected $collection: string = 'mealPlans'
 }
