@@ -7,6 +7,34 @@ export default class OpenAi {
   static async getCollection() {
     return getDb().collection("mealPlans");
   }
+
+  // Helper function to calculate BMR and daily calories
+  static calculateDailyCalories(payload: FormPrep) {
+    // Calculate BMR based on gender
+    let bmr: number;
+    if (payload.gender.toLowerCase() === "pria") {
+      bmr = 66 + 13.7 * payload.weight + 5 * payload.height - 6.8 * payload.age;
+    } else {
+      bmr =
+        655 + 9.6 * payload.weight + 1.8 * payload.height - 4.7 * payload.age;
+    }
+
+    const activityFactors: { [key: string]: number } = {
+      "Inactive": 1.2,
+      "Somewhat Active": 1.375,
+      "Active": 1.375,
+      "Very Active": 1.55
+    };
+
+    const activityFactor =
+      activityFactors[payload.activity_level.toLowerCase()];
+
+
+    const dailyCalories = Math.round(bmr * activityFactor);
+
+    return dailyCalories;
+  }
+
   static async generatePrepMeal(payload: FormPrep) {
     const response = await openai.responses.create({
       model: "gpt-4.1",
@@ -24,17 +52,17 @@ export default class OpenAi {
                 - Struktur data per hari:
                 - "day": Nomor hari (1-X)
                 - "date" : //hari pertama atau start date sesuai start date , begitu seterusnya dengan format YYYY-MM-DD atau format seperti new Date ()
-                - "dailycalories": Total 1500 kcal.
+                - "dailyCalories": ${this.calculateDailyCalories}
                 - "breakfast":
                     - "name"
                     - "imageUrl": Kosong atau placeholder
-                    - "calories": Sekitar 500
+                    - "calories": Sekitar 25% dari dailyCalories
                     - "ingredients": Array bahan
                     - "recipes": Array langkah masak
                     - "isDone" : false
                     - "notes" : ""
-                - "lunch": *(Harus juga punya ingredients dan recipes)*
-                - "dinner": *(Harus juga punya ingredients dan recipes)*
+                - "lunch": *(Harus juga punya ingredients dan recipes)* *Calories Sekitar 35% dari dailyCalories*
+                - "dinner": *(Harus juga punya ingredients dan recipes)* *Calories Sekitar 40% dari dailyCalories*
 
                 Rules tambahan:
                 - Semua menu adalah masakan Indonesia.
@@ -54,7 +82,7 @@ export default class OpenAi {
     const trim = response.output_text.replace(/```json/, "").replace(/```/, "");
 
     const hasil = JSON.parse(trim);
-    hasil.userId = new ObjectId(payload.userId)
+    hasil.userId = new ObjectId(payload.userId);
     console.log(typeof hasil, "ini tipe data <<<<<");
     const collection = await this.getCollection();
     await collection.insertOne(hasil);
