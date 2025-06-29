@@ -15,6 +15,7 @@ cloudinary.config({
 export async function POST(req: Request) {
   try {
     const userEmail = req.headers.get("x-user-email");
+    const userId = req.headers.get('x-user-id')
 
     if (!userEmail) {
       throw new CustomError(`Unauthorized! Please login first!`, 401);
@@ -23,7 +24,6 @@ export async function POST(req: Request) {
     const formData = await req.formData();
     const file = formData.get("photo") as File;
     const plansId = formData.get("plansId") as string;
-    const userId = formData.get("userId") as string;
     console.log(plansId, "ini plans id");
 
     if (!file) {

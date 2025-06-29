@@ -4,6 +4,10 @@ import PlansData from "@/db/models/Plans";
 
 export default async function generateMealFromIngredients(payload: RecipeFromModel, availableIngredients: string) {
   const data = await PlansData.where('_id', payload.plansId).first();
+  console.log(data,'ini dataaa nih ');
+  console.log(data?.todoList.length,'ini length');
+  
+  
 
   const response = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
@@ -15,12 +19,30 @@ export default async function generateMealFromIngredients(payload: RecipeFromMod
       {
         role: "user",
         content: `
-Saya memiliki rencana makan (todoList) sebagai berikut: ${JSON.stringify(data?.todoList)}.
+Saya memiliki rencana makan (todoList) sebagai berikut: ${JSON.stringify(data?.todoList,null,2)}.
 Namun saya tidak memiliki semua bahan tersebut.
 
 Saya hanya memiliki bahan-bahan berikut ini: ${availableIngredients}.
 
-Buat ulang meal plan saya (dengan format dan struktur yang sama dan hari yang sama , jika todolist ada 3 hari respon juga harus 3 hari), hanya menggunakan bahan yang saya miliki, dan tetap menjaga total kalori harian sekitar 1500 kcal/hari.
+Buat ulang meal plan saya (WAJIB dengan format dan struktur yang sama dan untuk ${data?.todoList.length} hari), hanya menggunakan bahan yang saya miliki, dan tetap menjaga total kalori harian ${data?.todoList[0].dailycalories}.
+
+Detail Format todoList WAJIB seperti ini : 
+ {
+      day: 1,
+      date: ${data?.todoList[0].date},
+      dailycalories: ${data?.todoList[0].dailycalories},
+      breakfast: {
+        name: nama hidangan,
+        imageUrl: "",
+        calories : total calories hidangan,
+        ingredients:[ingredients hidangan],
+        recipes:[cara memasaka hidangan],
+        isDone : false,
+        notes:""
+      },
+      lunch: [Object],
+      dinner: [Object]
+}
 
 Balas dalam format JSON:
 {
@@ -34,12 +56,44 @@ Balas dalam format JSON:
       }
     ],
     temperature: 0.7,
-    max_tokens: 2000
+    max_tokens: 3000
   });
 
   const raw = response.choices[0].message?.content ?? "";
-  const trimmed = raw.replace(/```json/, "").replace(/```/, "");
-  const hasil = JSON.parse(trimmed);
+  
+  // Better JSON extraction and validation
+  let trimmed = raw.trim();
+  
+  // Remove markdown code blocks more thoroughly
+  if (trimmed.startsWith('```json')) {
+    trimmed = trimmed.replace(/^```json\s*/, '');
+  }
+  if (trimmed.startsWith('```')) {
+    trimmed = trimmed.replace(/^```\s*/, '');
+  }
+  if (trimmed.endsWith('```')) {
+    trimmed = trimmed.replace(/\s*```$/, '');
+  }
+  
+  // Clean up any trailing content after the JSON
+  const jsonStart = trimmed.indexOf('{');
+  const jsonEnd = trimmed.lastIndexOf('}');
+  
+  if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+    trimmed = trimmed.substring(jsonStart, jsonEnd + 1);
+  }
+  
+  console.log('Raw OpenAI response:', raw);
+  console.log('Trimmed JSON:', trimmed);
+  
+  let hasil;
+  try {
+    hasil = JSON.parse(trimmed);
+  } catch (parseError) {
+    console.error('JSON Parse Error:', parseError);
+    console.error('Failed to parse:', trimmed);
+    throw new Error(`Failed to parse OpenAI response as JSON: ${parseError.message}`);
+  }
 
   hasil.userId = new Object(payload.userId);
   console.log(hasil.userId,'ini user id');

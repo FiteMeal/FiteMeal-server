@@ -1,9 +1,7 @@
-import { Plans } from "@/app/interfaces/prepMeal";
 import { CustomError } from "@/db/helpers/CustomError";
 import AlternativeMeal from "@/db/models/alternativeMeal";
+import PlansData from "@/db/models/Plans";
 import genereateAlternativeMeals from "@/services/generateGroceryList";
-import { ObjectId } from "mongodb";
-import { DB } from "mongoloquent";
 
 export async function POST(req: Request) {
   const userEmail = req.headers.get("x-user-email");
@@ -12,10 +10,15 @@ export async function POST(req: Request) {
     throw new CustomError(`Unauthorized! Please login first!`, 401);
   }
 
-  const data = await DB.collection<Plans>("plans")
-    .where("userId", "=", new ObjectId("685d3c4afd9e904bd1ac70b7"))
-    .get();
-  // console.log(data,"ini data ");
+  const body = await req.json();
+  const { id } = body;
+
+  if (!id) {
+    throw new CustomError("Plan ID is required", 400);
+  }
+  
+  const data = await PlansData.where('_id', id).get();
+  console.log(data, "ini data ");
 
   const resp = await genereateAlternativeMeals(data);
 

@@ -46,6 +46,7 @@ export async function GET(
       throw new CustomError(`Unauthorized! Please login first!`, 401);
     }
 
+    console.log(req.headers, "ini headers <<<<")
     const { id } = await params;
     const profile = await User.where("_id", id).first();
 

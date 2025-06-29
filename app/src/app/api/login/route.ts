@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
     try {
       const token = await new jose.SignJWT({
-        id: user._id,
+        id: user._id.toString(),
         email: user.email,
         username: user.username,
       })
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
           message: "Login successful",
           token,
           user: {
-            id: user._id,
+            id: user._id.toString(),
             email: user.email,
             username: user.username,
           },
