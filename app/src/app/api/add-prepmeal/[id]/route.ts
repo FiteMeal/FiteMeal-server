@@ -17,13 +17,17 @@ export async function GET(
       throw new CustomError(`Unauthorized! Please login first!`, 401);
     }
 
+    const userId = req.headers.get("x-user-id")
+    console.log(userId, "ini user id <<<");
+    
+
     const { id } = await params;
 
     if (!id) {
       throw new CustomError("Prep meal ID is required", 400);
     }
 
-    const prepMeal = await PlansData.where('_id', id).first();
+    const prepMeal = await PlansData.where('userId',userId).get();
 
     if (!prepMeal) {
       throw new CustomError("Prep meal not found", 404);
