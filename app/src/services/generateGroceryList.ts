@@ -4,14 +4,15 @@ import { ObjectId } from "mongodb";
 
 export default async function genereateAlternativeMeals(payload:Plans[]) {
 
-    const [{todoList,_id,startDate,name}] = payload
+    const [{todoList,_id,startDate,name,userId}] = payload
 
     const response = await openai.responses.create({
         model:'gpt-4.1',
         input:`Buatkan saya alternative meal yang mudah didapatkan di indonesia  dari list mealprep plan dibawah ini : ${JSON.stringify(todoList)} 
             kembalikan hanya dalam bentuk .json tanpa ada kata-kata yang lain, output hanya json seperti ini : 
             {
-            userId:${new ObjectId(_id)},
+            userId:${new ObjectId(userId)},
+            plansId:${new ObjectId(_id)}
             name:${name},
             startDate:${startDate},
             todoList:[output disini]

@@ -3,12 +3,19 @@ import OpenAi from "@/db/models/openAiModel";
 
 export async function POST(req: Request) {
   const userEmail = req.headers.get("x-user-email");
+  const userId = req.headers.get("x-user-id");
+ console.log(req.headers,'ini headers dari add meal ')
+  
+
 
   if (!userEmail) {
     throw new CustomError(`Unauthorized! Please login first!`, 401);
   }
 
   const body = await req.json();
+  body.userId = userId
+  console.log(body,'ini body');
+  
 
   const resp = await OpenAi.generatePrepMeal(body);
 

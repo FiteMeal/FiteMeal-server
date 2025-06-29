@@ -44,9 +44,9 @@ export default class OpenAi {
                     
                     {
                         name:${payload.name},
-                        userId: ${new ObjectId(payload.userId)},
+                        userId: ${payload.userId},
                         startDate : ${payload.startDate}
-                        TodoList:[output disini]
+                        todoList:[output disini]
                     }  `,
     });
 
