@@ -44,19 +44,21 @@ Detail Format todoList WAJIB seperti ini :
       dinner: [Object]
 }
 
-Balas dalam format JSON:
+Balas hanya dalam format JSON seperti berikut:
 {
   "notes": "penjelasan bahan yang terlihat",
   "userId": "${payload.userId}",
-  "plansId": "${payload.plansId}",
+  "startDate":${data.startDate},
+  "endDate":${data.endDate},
   "photoUrl": "${payload.photoUrl}",
   "todoList": [ ...hasil meal plan... ]
 }
+  JANGAN DITAMBAHKAN NARASI APAPUN (WAJIB)
     `
       }
     ],
     temperature: 0.7,
-    max_tokens: 3000
+    max_tokens: 5000
   });
 
  const raw = response.choices[0].message?.content ?? "";
