@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 export default async function generateExercise(payload: ExercisePlan) {
   const response = await openai.responses.create({
     model: "gpt-4.1",
-    input: `Buatkan data json excercise plan selama ${payload.duration} hari per minggu.
+    input: `Buatkan data json exercise plan selama ${payload.duration} hari, tapi jangan setiap hari, atur sehingga ada jeda antara latihan (tidak berturut turut).
                 - usia saya ${payload.age} tahun
                 - tinggi saya ${payload.height}cm
                 - berat badan saya ${payload.weight}kg, 
@@ -29,6 +29,7 @@ export default async function generateExercise(payload: ExercisePlan) {
                     name:${payload.name},
                     userId:${payload.userId},
                     startDate: ${payload.startDate},
+                    endDate: ${payload.startDate} + ${payload.duration - 1},
                     todoList : [output disini]
                 }`,
   });
@@ -36,12 +37,18 @@ export default async function generateExercise(payload: ExercisePlan) {
   const trim = response.output_text.replace(/```json/, "").replace(/```/, "");
 
   const hasil = JSON.parse(trim);
-  hasil.todoList = hasil.todoList.map((el:unknown) =>{
-      el.date = new Date(el.date)
-      return el
-    })
+  hasil.todoList = hasil.todoList.map((el: unknown) => {
+    el.date = new Date(el.date);
+    return el;
+  });
   hasil.userId = new ObjectId(payload.userId);
-  hasil.startDate = new Date(hasil.startDate)
+  hasil.startDate = new Date(hasil.startDate);
+  
+  // Calculate endDate: startDate + duration - 1 days
+  const endDate = new Date(payload.startDate);
+  endDate.setDate(endDate.getDate() + payload.duration - 1);
+  hasil.endDate = endDate;
+  
   console.log(typeof hasil, "ini tipe data <<<<<");
   return hasil;
 }

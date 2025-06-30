@@ -49,7 +49,7 @@ export default class OpenAi {
                 - Format: JSON, tidak perlu penjelasan tambahan.
                 - Struktur data per hari:
                 - "day": Nomor hari (1-X)
-                - "date" : //hari pertama atau start date sesuai start date , begitu seterusnya dengan format YYYY-MM-DD atau format seperti new Date ()
+                - "date" : format YYYY-MM-DD dimulai dari ${payload.startDate}
                 - "dailyCalories": ${this.calculateDailyCalories}
                 - "breakfast":
                     - "name"
@@ -71,7 +71,8 @@ export default class OpenAi {
                     {
                         name:${payload.name},
                         userId: ${payload.userId},
-                        startDate : ${payload.startDate}
+                        startDate : ${payload.startDate},
+                        endDate : ${payload.startDate} + ${payload.duration - 1},
                         todoList:[output disini]
                     }  `,
     });
@@ -85,7 +86,13 @@ export default class OpenAi {
       return el
     })
     hasil.userId = new ObjectId(payload.userId);
-    hasil.startDate = new Date(payload.startDate)
+    hasil.startDate = new Date(payload.startDate);
+    
+    // Calculate endDate: startDate + duration - 1 days
+    const endDate = new Date(payload.startDate);
+    endDate.setDate(endDate.getDate() + payload.duration - 1);
+    hasil.endDate = endDate;
+    
     console.log(typeof hasil, "ini tipe data <<<<<");
     await PlansData.insert(hasil)
     return hasil;

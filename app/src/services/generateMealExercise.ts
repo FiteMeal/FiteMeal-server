@@ -90,6 +90,7 @@ export default async function generaterMealExercisePlan(payload: MealExercise) {
                           "name": "${payload.name}",
                           "userId": "${payload.userId}",
                           "startDate": "${payload.startDate}",
+                          "endDate": "${payload.startDate} + ${payload.duration - 1}",
                           "dailyCalories": ${dailyCalories},
                           "duration": ${payload.duration},
                           "goal": "${payload.goals}",
@@ -104,6 +105,12 @@ export default async function generaterMealExercisePlan(payload: MealExercise) {
     hasil.startDate = new Date(hasil.startDate)
     hasil.userId = new ObjectId(payload.userId);
     hasil.dailyCalories = dailyCalories;
+    
+    // Calculate endDate: startDate + duration - 1 days
+    const endDate = new Date(payload.startDate);
+    endDate.setDate(endDate.getDate() + payload.duration - 1);
+    hasil.endDate = endDate;
+    
     console.log(typeof hasil, "ini tipe data <<<<<");
     return hasil;
   } catch (error) {
