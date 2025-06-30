@@ -23,6 +23,7 @@ export default async function generateExercise(payload: ExercisePlan) {
                 - "sets": jumlah set,
                 - "reps": repetisi atau durasi,
                 - "targetMuscle": otot yang dilatih,
+                - "isDone": false
 
                 Jangan ada narasi , output hanya narasi seperti ini : 
                 {
@@ -43,6 +44,7 @@ export default async function generateExercise(payload: ExercisePlan) {
   });
   hasil.userId = new ObjectId(payload.userId);
   hasil.startDate = new Date(hasil.startDate);
+  hasil.isDone = false
   
   // Calculate endDate: startDate + duration - 1 days
   const endDate = new Date(payload.startDate);
