@@ -31,6 +31,8 @@ export async function GET(req: Request) {
     }
 
     const userId = req.headers.get("x-user-id");
+    
+    
     console.log(userId, "ini user id <<<");
     
     if (!userId) {
@@ -39,6 +41,8 @@ export async function GET(req: Request) {
 
     // Convert string userId to ObjectId untuk match dengan database
     const userObjectId = new ObjectId(userId);
+    console.log(userObjectId,'objectid');
+    
     
     // Gunakan .get() untuk mendapatkan semua data, bukan .first()
     const prepMeals = await PlansData.where('userId', userObjectId).get();

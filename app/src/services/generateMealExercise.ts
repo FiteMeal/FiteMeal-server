@@ -101,6 +101,7 @@ export default async function generaterMealExercisePlan(payload: MealExercise) {
     const trim = resp.output_text.replace(/```json/, "").replace(/```/, "");
 
     const hasil = JSON.parse(trim);
+    hasil.startDate = new Date(hasil.startDate)
     hasil.userId = new ObjectId(payload.userId);
     hasil.dailyCalories = dailyCalories;
     console.log(typeof hasil, "ini tipe data <<<<<");

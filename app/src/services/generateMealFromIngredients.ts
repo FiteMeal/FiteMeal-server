@@ -10,7 +10,7 @@ export default async function generateMealFromIngredients(payload: RecipeFromMod
   
 
   const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
+    model: "gpt-4.1",
     messages: [
       {
         role: "system",
@@ -30,7 +30,7 @@ Detail Format todoList WAJIB seperti ini :
  {
       day: 1,
       date: ${data?.todoList[0].date},
-      dailycalories: ${data?.todoList[0].dailycalories},
+      dailycalories: ${data?.todoList[0].dailyCalories},
       breakfast: {
         name: nama hidangan,
         imageUrl: "",
@@ -52,48 +52,41 @@ Balas dalam format JSON:
   "photoUrl": "${payload.photoUrl}",
   "todoList": [ ...hasil meal plan... ]
 }
-        `
+    `
       }
     ],
     temperature: 0.7,
     max_tokens: 3000
   });
 
-  const raw = response.choices[0].message?.content ?? "";
-  
-  // Better JSON extraction and validation
-  let trimmed = raw.trim();
-  
-  // Remove markdown code blocks more thoroughly
-  if (trimmed.startsWith('```json')) {
-    trimmed = trimmed.replace(/^```json\s*/, '');
-  }
-  if (trimmed.startsWith('```')) {
-    trimmed = trimmed.replace(/^```\s*/, '');
-  }
-  if (trimmed.endsWith('```')) {
-    trimmed = trimmed.replace(/\s*```$/, '');
-  }
-  
-  // Clean up any trailing content after the JSON
-  const jsonStart = trimmed.indexOf('{');
-  const jsonEnd = trimmed.lastIndexOf('}');
-  
-  if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
-    trimmed = trimmed.substring(jsonStart, jsonEnd + 1);
-  }
-  
-  console.log('Raw OpenAI response:', raw);
-  console.log('Trimmed JSON:', trimmed);
-  
-  let hasil;
-  try {
-    hasil = JSON.parse(trimmed);
-  } catch (parseError) {
-    console.error('JSON Parse Error:', parseError);
-    console.error('Failed to parse:', trimmed);
-    throw new Error(`Failed to parse OpenAI response as JSON: ${parseError.message}`);
-  }
+ const raw = response.choices[0].message?.content ?? "";
+
+let trimmed = raw.trim();
+
+// Hapus semua blok code markdown secara menyeluruh
+trimmed = trimmed.replace(/```(?:json)?[\s\S]*?```/g, '').trim();
+
+// Cari objek JSON di dalam string
+const jsonStart = trimmed.indexOf('{');
+const jsonEnd = trimmed.lastIndexOf('}');
+
+if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+  trimmed = trimmed.substring(jsonStart, jsonEnd + 1);
+}
+
+console.log('Raw OpenAI response:', raw);
+console.log('Trimmed JSON:', trimmed);
+
+let hasil;
+try {
+  hasil = JSON.parse(trimmed);
+} catch (parseError) {
+  console.error('JSON Parse Error:', parseError);
+  console.error('Failed to parse:', trimmed);
+  throw new Error(`Failed to parse OpenAI response as JSON: ${parseError.message}`);
+}
+
+
 
   hasil.userId = new Object(payload.userId);
   console.log(hasil.userId,'ini user id');

@@ -16,7 +16,7 @@ export default async function generateExercise(payload: ExercisePlan) {
                 Detail Format :
                 - Struktur data per hari:
                 - "day": Nomor hari (1-X)
-                - "date" : //hari pertama atau start date sesuai start date , begitu seterusnya dengan format YYYY-MM-DD atau format seperti new Date ()
+                - "date" : format YYYY-MM-DD dimulai dari ${payload.startDate}
                 - excerciseName : string (untuk exercise dibedakan setiap hari nya)
                 - "totalSession": string durasi total latihan (misal: "45 menit") 
                 - "caloriesBurned": number estimasi kalori terbakar
@@ -36,7 +36,12 @@ export default async function generateExercise(payload: ExercisePlan) {
   const trim = response.output_text.replace(/```json/, "").replace(/```/, "");
 
   const hasil = JSON.parse(trim);
+  hasil.todoList = hasil.todoList.map((el:unknown) =>{
+      el.date = new Date(el.date)
+      return el
+    })
   hasil.userId = new ObjectId(payload.userId);
+  hasil.startDate = new Date(hasil.startDate)
   console.log(typeof hasil, "ini tipe data <<<<<");
   return hasil;
 }

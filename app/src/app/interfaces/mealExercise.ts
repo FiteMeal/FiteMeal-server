@@ -7,9 +7,9 @@ export interface MealExercise {
     weight: number
     height: number
     gender: string
-    activity_level: string  // Missing property
+    activity_level: string  
     goals: string
-    preferences?: string    // Missing property (optional)
+    preferences?: string    
     equipment: string
     duration: number
     startDate: string

@@ -27,7 +27,7 @@ export async function GET(
       throw new CustomError("Prep meal ID is required", 400);
     }
 
-    const prepMeal = await PlansData.where('userId',userId).get();
+    const prepMeal = await PlansData.where('_id',id).get();
 
     if (!prepMeal) {
       throw new CustomError("Prep meal not found", 404);
