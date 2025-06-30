@@ -1,12 +1,10 @@
 import openai from "@/lib/openai";
-import { getDb } from "../config/mongodb";
 import { FormPrep } from "@/app/interfaces/prepMeal";
 import { ObjectId } from "mongodb";
+import PlansData from "./Plans";
 
 export default class OpenAi {
-  static async getCollection() {
-    return getDb().collection("mealPlans");
-  }
+ 
 
   // Helper function to calculate BMR and daily calories
   static calculateDailyCalories(payload: FormPrep) {
@@ -82,10 +80,14 @@ export default class OpenAi {
     const trim = response.output_text.replace(/```json/, "").replace(/```/, "");
 
     const hasil = JSON.parse(trim);
+    hasil.todoList = hasil.todoList.map((el:unknown) =>{
+      el.date = new Date(el.date)
+      return el
+    })
     hasil.userId = new ObjectId(payload.userId);
+    hasil.startDate = new Date(payload.startDate)
     console.log(typeof hasil, "ini tipe data <<<<<");
-    const collection = await this.getCollection();
-    await collection.insertOne(hasil);
+    await PlansData.insert(hasil)
     return hasil;
   }
 }

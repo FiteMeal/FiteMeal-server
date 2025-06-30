@@ -5,12 +5,13 @@ import Transaction from "@/db/models/Transaction";
 export async function POST(req: Request) {
   try {
     const userEmail = req.headers.get("x-user-email");
-
+    const userId = req.headers.get("x-user-id");
+    
     if (!userEmail) {
       throw new CustomError(`Unauthorized! Please login first!`, 401)
     }
 
-    const { amount, orderId, userId } = await req.json();
+    const { amount, orderId } = await req.json();
 
     const existingTransaction = await Transaction.where(
       "orderId",

@@ -17,6 +17,8 @@ export async function POST(req: Request) {
     loginSchema.parse(body);
 
     const user = await User.where("email", body.email).first();
+    console.log(user,'user dari login');
+    
     if (!user) {
       throw new CustomError("Invalid email or password", 401);
     }

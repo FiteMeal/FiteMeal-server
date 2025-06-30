@@ -20,6 +20,8 @@ export async function middleware(req: NextRequest) {
 
     if (pathname.includes("/api")) {
       const authHeader = req.headers.get("Authorization");
+      console.log(authHeader,'autheaders <<<<<<<<<<<<<<<<<<<');
+      
 
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
         throw new CustomError("Unauthorized - No token provided", 401);
@@ -33,6 +35,10 @@ export async function middleware(req: NextRequest) {
 
       const secret = new TextEncoder().encode(process.env.JWT_SECRET);
       const { payload } = await jose.jwtVerify(token, secret);
+      console.log(token,'ini token middleware');
+      
+      console.log(payload,'ini payload dari middleware');
+      
 
       const requestHeaders = new Headers(req.headers);
       requestHeaders.set("x-user-id", payload.id as string);
