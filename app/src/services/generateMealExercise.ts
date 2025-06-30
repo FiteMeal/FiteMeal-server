@@ -71,7 +71,8 @@ export default async function generaterMealExercisePlan(payload: MealExercise) {
                                   "sets": jumlah set,
                                   "reps": repetisi atau durasi,
                                   "targetMuscle": otot yang dilatih,
-                                  "equipment": alat yang digunakan
+                                  "equipment": alat yang digunakan,
+                                  "isDone":false
                               }
                           ]
                           - "caloriesBurned": estimasi kalori terbakar

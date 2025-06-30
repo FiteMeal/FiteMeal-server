@@ -131,4 +131,5 @@ export async function GET(req: Request) {
     const { message, status } = errorHandler(error);
     return Response.json({ message }, { status });
   }
+ 
 }
