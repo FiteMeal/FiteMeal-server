@@ -5,6 +5,7 @@ import generateByPhoto from "@/services/generateRecipeByPhoto";
 import UserPhoto from "@/db/models/generateRecipeByPhoto";
 import { ObjectId } from "mongodb";
 import { CustomError } from "@/db/helpers/CustomError";
+import MealByPhoto from "@/db/models/generateMealByPhoto";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -57,7 +58,7 @@ export async function POST(req: Request) {
     };
     await UserPhoto.insert(payload);
     const generateResponse = await generateByPhoto(payload);
-    await PlansData.insert(generateResponse);
+    await MealByPhoto.insert(generateResponse);
 
     return Response.json({ generateResponse }, { status: 201 });
   } catch (error) {
@@ -65,4 +66,16 @@ export async function POST(req: Request) {
     const { message, status } = errorHandler(error);
     return Response.json({ message }, { status });
   }
+
+}
+export async function GET(req:Request){
+
+  const userId = await req.headers.get('x-user-id')
+  const objectId = new ObjectId(userId)
+  const data =  await MealByPhoto.where('userId',objectId).get()
+
+  console.log(data,'inidata dari get upload');
+  
+
+  return Response.json({data},{status:200})
 }
