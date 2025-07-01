@@ -9,9 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "midtrans-client": "^1.4.3",
     "cloudinary": "^2.7.0",
+    "dayjs": "^1.11.13",
     "formidable": "^3.5.4",
+    "midtrans-client": "^1.4.3",
     "mongoloquent": "^3.3.4",
     "multer": "^2.0.1",
     "next": "15.3.4",

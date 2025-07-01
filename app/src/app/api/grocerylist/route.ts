@@ -13,13 +13,14 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { id } = body;
+  const { planId } = body;
 
-  if (!id) {
+  if (!planId) {
     throw new CustomError("Plan ID is required", 400);
   }
+  const objectId = new ObjectId(planId)
   
-  const data = await PlansData.where('_id', id).get();
+  const data = await PlansData.where('userId', objectId).get();
   console.log(data, "ini data ");
 
   const resp = await genereateAlternativeMeals(data);

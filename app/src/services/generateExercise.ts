@@ -1,4 +1,5 @@
 import { ExercisePlan } from "@/app/interfaces/excercise";
+import dayjs from "@/lib/dayjs";
 import openai from "@/lib/openai";
 import { ObjectId } from "mongodb";
 
@@ -43,14 +44,20 @@ export default async function generateExercise(payload: ExercisePlan) {
     return el;
   });
   hasil.userId = new ObjectId(payload.userId);
-  hasil.startDate = new Date(hasil.startDate);
+  hasil.startDate = dayjs(hasil.startDate).toDate();
+  console.log(hasil.startDate,'startdate <<<<');
+  
   hasil.isDone = false
   
   // Calculate endDate: startDate + duration - 1 days
   const endDate = new Date(payload.startDate);
   endDate.setDate(endDate.getDate() + payload.duration - 1);
-  hasil.endDate = endDate;
+  hasil.endDate = dayjs(endDate).toDate();
+  console.log(dayjs(),'ini dayjs');
+  console.log(dayjs().toDate(),"ini dayjs to date ");
   
-  console.log(typeof hasil, "ini tipe data <<<<<");
+  
+  
+  // console.log(typeof hasil, "ini tipe data <<<<<");
   return hasil;
 }
