@@ -1,7 +1,8 @@
 import openai from "@/lib/openai";
-import { FormPrep } from "@/app/interfaces/prepMeal";
+import { FormPrep, Plans } from "@/app/interfaces/prepMeal";
 import { ObjectId } from "mongodb";
 import PlansData from "./Plans";
+import dayjs from "@/lib/dayjs";
 
 export default class OpenAi {
  
@@ -80,13 +81,16 @@ export default class OpenAi {
     console.log(response.output_text);
     const trim = response.output_text.replace(/```json/, "").replace(/```/, "");
 
-    const hasil = JSON.parse(trim);
-    hasil.todoList = hasil.todoList.map((el:unknown) =>{
+    const hasil: Plans = JSON.parse(trim);
+    hasil.todoList = hasil.todoList.map((el) =>{
       el.date = new Date(el.date)
       return el
     })
-    hasil.userId = new ObjectId(payload.userId);
-    hasil.startDate = new Date(payload.startDate);
+
+     hasil.userId = new ObjectId(payload.userId);
+      hasil.startDate = dayjs(hasil.startDate).toDate();
+      console.log(hasil.startDate,'startdate <<<<');
+      
     
     // Calculate endDate: startDate + duration - 1 days
     const endDate = new Date(payload.startDate);

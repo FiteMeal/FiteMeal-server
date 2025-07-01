@@ -1,8 +1,10 @@
-import { RecipeFromModel } from "@/app/interfaces/prepMeal";
 import { extractIngredientsFromImage } from "./analyzedImage";
 import generateMealFromIngredients from "./generateMealFromIngredients";
+import { ObjectId } from "mongodb";
 
-export default async function generateByPhoto(payload: RecipeFromModel) {
+export default async function generateByPhoto(payload: { userId : ObjectId
+  plansId:ObjectId
+  photoUrl:string}) {
   console.log("Payload:", payload);
 
   const ingredientsText = await extractIngredientsFromImage(payload.photoUrl);

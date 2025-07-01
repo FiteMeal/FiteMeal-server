@@ -39,10 +39,10 @@ export async function GET(
     return Response.json({ message }, { status });
   }
 }
-  export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  export async function PATCH(req: Request, { params }: { params:Promise<{ id: string }> }) {
     try {
       const userEmail = req.headers.get("x-user-email");
-      const userId = req.headers.get("x-user-id");
+      // const userId = req.headers.get("x-user-id");
   
       if (!userEmail) {
         throw new CustomError(`Unauthorized! Please login first!`, 401);
@@ -64,7 +64,7 @@ export async function GET(
         throw new CustomError("Plan not found", 404);
       }
   
-      const todos = plan.todoList?.map((todo: unknown) => {
+      const todos = plan.todoList?.map((todo) => {
         if (todo.day === day) {
           
             todo.isDone = isDone;
@@ -75,9 +75,8 @@ export async function GET(
         return todo;
       });
   
-      const result = await dataExcercise.where("_id", objectId).update({ 
+       await dataExcercise.where("_id", objectId).update({ 
         todoList: todos,
-        updatedAt: new Date()
       });
   
      

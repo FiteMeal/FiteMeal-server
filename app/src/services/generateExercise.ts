@@ -38,8 +38,8 @@ export default async function generateExercise(payload: ExercisePlan) {
   console.log(response.output_text);
   const trim = response.output_text.replace(/```json/, "").replace(/```/, "");
 
-  const hasil = JSON.parse(trim);
-  hasil.todoList = hasil.todoList.map((el: unknown) => {
+  const hasil: ExercisePlan = JSON.parse(trim);
+  hasil.todoList = hasil.todoList.map((el) => {
     el.date = new Date(el.date);
     return el;
   });
@@ -47,7 +47,6 @@ export default async function generateExercise(payload: ExercisePlan) {
   hasil.startDate = dayjs(hasil.startDate).toDate();
   console.log(hasil.startDate,'startdate <<<<');
   
-  hasil.isDone = false
   
   // Calculate endDate: startDate + duration - 1 days
   const endDate = new Date(payload.startDate);

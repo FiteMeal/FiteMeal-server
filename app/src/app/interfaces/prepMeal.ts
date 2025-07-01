@@ -5,15 +5,16 @@ export type Root = Plans[]
 
 export interface Plans extends IMongoloquentSchema,IMongoloquentTimestamps {
   name: string
-  userId: string
-  startDate:string
+  userId: ObjectId
+  startDate:string | Date
+  endDate:string | Date
   todoList: TodoList[]
 }
 
 export interface TodoList {
   day: number
-  date:string
-  dailycalories: number
+  date:string | Date
+  dailyCalories: number
   breakfast: Breakfast
   lunch: Lunch
   dinner: Dinner

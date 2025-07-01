@@ -3,6 +3,7 @@
 import Transaction from "@/db/models/Transaction"; // Asumsi path model Anda
 import User from "@/db/models/User"; // Anda perlu membuat model User ini
 import { createHash } from "crypto";
+import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -94,7 +95,7 @@ export async function POST(req: Request) {
 }
 
 // Helper function untuk menghindari repetisi kode
-async function updateTransactionToSuccess(orderId: string, userId: string) {
+async function updateTransactionToSuccess(orderId: string, userId: ObjectId) {
   // Update status transaksi menjadi 'success'
   await Transaction.where("orderId", orderId).update({ status: "success" });
   console.log(`Transaction ${orderId} status updated to success.`);

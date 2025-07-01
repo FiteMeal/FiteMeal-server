@@ -70,7 +70,7 @@ export async function GET(
 
     return Response.json(response, { status: 200 });
   } catch (error) {
-    console.log();
+    console.log(error,'ini error');
 
     const { message, status } = errorHandler(error);
     return Response.json({ message }, { status });

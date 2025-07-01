@@ -13,4 +13,5 @@ export interface MealExercise {
     equipment: string
     duration: number
     startDate: string
+    endDate:string
 }
