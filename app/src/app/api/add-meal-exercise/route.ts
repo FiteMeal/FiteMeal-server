@@ -5,6 +5,9 @@ import MealExercisePlan from "@/db/models/MealExercisePlan";
 import PlansData from "@/db/models/Plans";
 import dataExcercise from "@/db/models/dataExcercise";
 import { ObjectId } from "mongodb";
+import { Plans } from "@/app/interfaces/prepMeal";
+import { Collection } from "mongoloquent";
+import { ExercisePlan } from "@/app/interfaces/excercise";
 
 export async function POST(req: Request) {
   try {
@@ -38,9 +41,9 @@ export async function POST(req: Request) {
     const existingExercisePlans = await dataExcercise.where('userId', userObjectId).get();
 
     // Function untuk check date overlap
-    const hasDateOverlap = (existingPlans: unknown[]) => {
-      return existingPlans.some((plan: unknown) => {
-        const planStart = new Date(plan.startDate);
+    const hasDateOverlap = (existingPlans : Collection<Plans> | Collection<ExercisePlan>) => {
+      return existingPlans.some((plan) => {
+        const planStart = new Date(plan.startDate) ;
         const planEnd = new Date(plan.endDate);
         
         // Check if new plan overlaps with existing plan
@@ -105,7 +108,7 @@ export async function GET(req: Request) {
     const ongoing: unknown[] = [];
     const upcoming: unknown[] = [];
 
-    mealExercisePlans.forEach((plan: unknown) => {
+    mealExercisePlans.forEach((plan) => {
       const startDate = new Date(plan.startDate);
       const endDate = new Date(plan.endDate);
       

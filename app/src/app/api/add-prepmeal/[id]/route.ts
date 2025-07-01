@@ -42,10 +42,10 @@ export async function GET(
   }
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const userEmail = req.headers.get("x-user-email");
-    const userId = req.headers.get("x-user-id");
+    // const userId = req.headers.get("x-user-id");
 
     if (!userEmail) {
       throw new CustomError(`Unauthorized! Please login first!`, 401);
@@ -70,13 +70,21 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       throw new CustomError("Plan not found", 404);
     }
 
-    const todos = plan.todoList?.map((todo: unknown) => {
+    const _type: keyof TodoList = type
+
+    const todos = plan.todoList?.map((todo) => {
       if (todo.day === day) {
-         if (todo[type]) {
-          todo[type].isDone = isDone;
-          if (notes !== undefined) {
-            todo[type].notes = notes;
+         if (todo[_type]) {
+          const y = todo[_type] as object
+          const x = {
+            ...todo,
+            [type]: {
+              ...y,
+              isDone: isDone,
+              notes: notes || ""
+            }
           }
+          todo = x
         }
       }
       return todo;
@@ -85,10 +93,9 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     // ✅ FIX: Update with proper error handling
     const result = await PlansData.where("_id", objectId).update({ 
       todoList: todos,
-      updatedAt: new Date()
     });
 
-    if (result.modifiedCount === 0) {
+    if (!result) {
       throw new CustomError("Failed to update plan", 400);
     }
 

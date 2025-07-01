@@ -3,6 +3,6 @@ import { Model } from "mongoloquent";
 
 export default class dataExcercise extends Model<ExercisePlan>{
 
-    static $schema: dataExcercise;
+    static $schema: ExercisePlan;
     protected $collection: string = 'exercisePlan'
 }

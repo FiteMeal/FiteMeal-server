@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb"
 import { IMongoloquentSchema, IMongoloquentTimestamps } from "mongoloquent"
 
 export interface IUsers extends IMongoloquentSchema,IMongoloquentTimestamps {
@@ -23,6 +24,6 @@ export interface IMidtransRecord extends IMongoloquentSchema, IMongoloquentTimes
     amount: number,
     status: string,
     midtransToken: string,
-    userId: string,
+    userId: ObjectId,
     redirectUrl: string
 }

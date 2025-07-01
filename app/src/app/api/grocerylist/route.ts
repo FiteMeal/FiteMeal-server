@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   }
   const objectId = new ObjectId(planId)
   
-  const data = await PlansData.where('userId', objectId).get();
+  const data = await PlansData.where('_id', objectId).get();
   console.log(data, "ini data ");
 
   const resp = await genereateAlternativeMeals(data);
@@ -44,7 +44,7 @@ export async function GET(
 
 
     
-    const userObjectId = new ObjectId(userId);
+    const userObjectId = new ObjectId(userId as string);
 
     const groceryList = await AlternativeMeal.where('userId', userObjectId).get();
 

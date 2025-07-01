@@ -1,6 +1,7 @@
 import { CustomError } from "@/db/helpers/CustomError";
 import errorHandler from "@/db/helpers/errorHandler";
 import Transaction from "@/db/models/Transaction";
+import { ObjectId } from "mongodb";
 
 export async function POST(req: Request) {
   try {
@@ -70,11 +71,11 @@ export async function POST(req: Request) {
 
     const transactionData = {
       orderId: orderId,
-      amount: amount,
+      amount: amount as number,
       status: "pending",
-      midtransToken: midtransResp.token,
-      userId: userId,
-      redirectUrl: midtransResp.redirect_url,
+      midtransToken: midtransResp.token as string,
+      userId: new ObjectId(userId as string),
+      redirectUrl: midtransResp.redirect_url as string,
     };
 
     await Transaction.insert(transactionData);

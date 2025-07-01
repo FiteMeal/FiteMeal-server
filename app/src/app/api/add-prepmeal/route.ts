@@ -4,6 +4,9 @@ import OpenAi from "@/db/models/openAiModel";
 import PlansData from "@/db/models/Plans";
 import MealExercisePlan from "@/db/models/MealExercisePlan";
 import { ObjectId } from "mongodb";
+import { Collection } from "mongoloquent";
+import { Plans } from "@/app/interfaces/prepMeal";
+import { MealExercise } from "@/app/interfaces/mealExercise";
 
 export async function POST(req: Request) {
   try {
@@ -37,8 +40,8 @@ export async function POST(req: Request) {
     const existingMealPlans = await PlansData.where('userId', userObjectId).get();
 
     // Function untuk check date overlap
-    const hasDateOverlap = (existingPlans: unknown[]) => {
-      return existingPlans.some((plan: unknown) => {
+    const hasDateOverlap = (existingPlans: Collection<Plans> | Collection<MealExercise>) => {
+      return existingPlans.some((plan) => {
         const planStart = new Date(plan.startDate);
         const planEnd = new Date(plan.endDate);
         
@@ -105,7 +108,7 @@ export async function GET(req: Request) {
     const ongoing: unknown[] = [];
     const upcoming: unknown[] = [];
 
-    prepMeals.forEach((plan: unknown) => {
+    prepMeals.forEach((plan) => {
       const startDate = new Date(plan.startDate);
       const endDate = new Date(plan.endDate);
       

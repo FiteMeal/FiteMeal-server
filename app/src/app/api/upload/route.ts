@@ -1,6 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
 import errorHandler from "@/db/helpers/errorHandler";
-import PlansData from "@/db/models/Plans";
 import generateByPhoto from "@/services/generateRecipeByPhoto";
 import UserPhoto from "@/db/models/generateRecipeByPhoto";
 import { ObjectId } from "mongodb";
@@ -36,7 +35,7 @@ export async function POST(req: Request) {
     const buffer = Buffer.from(bytes);
 
     // Upload buffer to Cloudinary
-    const upload = await new Promise((resolve, reject) => {
+    const upload: {secure_url: string} = await new Promise((resolve, reject) => {
       cloudinary.uploader
         .upload_stream(
           {
@@ -45,16 +44,16 @@ export async function POST(req: Request) {
           },
           (error, result) => {
             if (error) reject(error);
-            else resolve(result);
+            else resolve(result as {secure_url: string});
           }
         )
         .end(buffer);
-    });
+    }) 
 
     const payload = {
       plansId: new ObjectId(plansId),
-      userId: new ObjectId(userId),
-      photoUrl: upload.secure_url,
+      userId: new ObjectId(userId as string),
+      photoUrl: upload.secure_url as string,
     };
     await UserPhoto.insert(payload);
     const generateResponse = await generateByPhoto(payload);
@@ -71,7 +70,7 @@ export async function POST(req: Request) {
 export async function GET(req:Request){
 
   const userId = await req.headers.get('x-user-id')
-  const objectId = new ObjectId(userId)
+  const objectId = new ObjectId(userId as string)
   const data =  await MealByPhoto.where('userId',objectId).get()
 
   console.log(data,'inidata dari get upload');

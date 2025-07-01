@@ -1,8 +1,12 @@
 import openai from "@/lib/openai";
-import { RecipeFromModel } from "@/app/interfaces/prepMeal";
 import PlansData from "@/db/models/Plans";
+import { ObjectId } from "mongodb";
 
-export default async function generateMealFromIngredients(payload: RecipeFromModel, availableIngredients: string) {
+export default async function generateMealFromIngredients(payload: {
+   userId : ObjectId
+    plansId:ObjectId
+    photoUrl:string
+}, availableIngredients: string) {
   const data = await PlansData.where('_id', payload.plansId).first();
   console.log(data,'ini dataaa nih ');
   console.log(data?.todoList.length,'ini length');
@@ -24,7 +28,7 @@ Namun saya tidak memiliki semua bahan tersebut.
 
 Saya hanya memiliki bahan-bahan berikut ini: ${availableIngredients}.
 
-Buat ulang meal plan saya (WAJIB dengan format dan struktur yang sama dan untuk ${data?.todoList.length} hari), hanya menggunakan bahan yang saya miliki, dan tetap menjaga total kalori harian ${data?.todoList[0].dailycalories}.
+Buat ulang meal plan saya (WAJIB dengan format dan struktur yang sama dan untuk ${data?.todoList.length} hari), hanya menggunakan bahan yang saya miliki, dan tetap menjaga total kalori harian ${data?.todoList[0].dailyCalories}.
 
 Detail Format todoList WAJIB seperti ini : 
  {
@@ -48,8 +52,8 @@ Balas hanya dalam format JSON seperti berikut:
 {
   "notes": "penjelasan bahan yang terlihat",
   "userId": "${payload.userId}",
-  "startDate":${data.startDate},
-  "endDate":${data.endDate},
+  "startDate":${data?.startDate},
+  "endDate":${data?.endDate},
   "photoUrl": "${payload.photoUrl}",
   "todoList": [ ...hasil meal plan... ]
 }
@@ -85,7 +89,7 @@ try {
 } catch (parseError) {
   console.error('JSON Parse Error:', parseError);
   console.error('Failed to parse:', trimmed);
-  throw new Error(`Failed to parse OpenAI response as JSON: ${parseError.message}`);
+  throw new Error(`Failed to parse OpenAI response as JSON:`);
 }
 
 
