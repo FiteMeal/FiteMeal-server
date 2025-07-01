@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb"
+import { IMongoloquentSchema, IMongoloquentTimestamps } from "mongoloquent"
 
-export interface MealExercise {
+export interface MealExercise extends IMongoloquentSchema, IMongoloquentTimestamps {
    userId: ObjectId
     name:string
     age: number
