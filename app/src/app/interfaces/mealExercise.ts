@@ -76,6 +76,7 @@ export interface Exercise {
   exercises: Exercise2[];
   caloriesBurned: number;
   notes: string;
+  isDone: boolean;
 }
 
 export interface Exercise2 {
@@ -84,5 +85,4 @@ export interface Exercise2 {
   reps: string;
   targetMuscle: string;
   equipment: string;
-  isDone: boolean;
 }

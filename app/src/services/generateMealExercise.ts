@@ -71,12 +71,12 @@ export default async function generaterMealExercisePlan(payload: MealExercise) {
                                   "sets": jumlah set,
                                   "reps": repetisi atau durasi,
                                   "targetMuscle": otot yang dilatih,
-                                  "equipment": alat yang digunakan,
-                                  "isDone":false
+                                  "equipment": alat yang digunakan
                               }
                           ]
                           - "caloriesBurned": estimasi kalori terbakar
                           - "notes": tips atau catatan
+                          - "isDone": false
       
                       Rules tambahan:
                       - Semua menu makanan adalah masakan Indonesia

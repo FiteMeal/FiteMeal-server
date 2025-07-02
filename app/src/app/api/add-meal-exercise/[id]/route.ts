@@ -50,7 +50,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
     const { id } = await params;
     const objectId = new ObjectId(id);
-    const { day, type, notes, isDone, planType, exerciseIndex } = await req.json();
+    const { day, type, notes, isDone, planType } = await req.json();
 
     if (!day || typeof isDone !== 'boolean' || !planType) {
       throw new CustomError("Missing required fields: day, isDone, planType", 400);
@@ -69,13 +69,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       const validMealTypes = ['breakfast', 'lunch', 'dinner'];
       if (!validMealTypes.includes(type)) {
         throw new CustomError("Invalid type. Must be: breakfast, lunch, or dinner", 400);
-      }
-    }
-
-    // Validation for exercise type
-    if (planType === 'exercise') {
-      if (typeof exerciseIndex !== 'number') {
-        throw new CustomError("Missing required field: exerciseIndex for exercise plan", 400);
       }
     }
 
@@ -107,21 +100,11 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       // Update exercise plan todo
       todos = plan.todoList?.map((todo) => {
         if (todo.day === day) {
-          const updatedExercises = todo.exercise.exercises.map((exercise, index) => {
-            if (index === exerciseIndex) {
-              return {
-                ...exercise,
-                isDone: isDone
-              };
-            }
-            return exercise;
-          });
-          
           return {
             ...todo,
             exercise: {
               ...todo.exercise,
-              exercises: updatedExercises
+              isDone: isDone
             }
           };
         }
